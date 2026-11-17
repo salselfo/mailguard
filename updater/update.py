@@ -22,9 +22,14 @@ DATA = DOCS / "data"
 UA = {"User-Agent": "mailguard-updater/1.0"}
 TYPES = {"TXT": 16, "A": 1, "MX": 15}
 
+# URLhaus e' stato tolto: da giugno 2025 richiede una chiave personale (Auth-Key).
+# "relevant": tiene solo i domini .it o che contengono il nome di un brand monitorato
+# (serve per elenchi enormi, che non possono stare in una pagina web).
 FEEDS = [
     {"name": "openphish", "url": "https://openphish.com/feed.txt", "kind": "urls"},
-    {"name": "urlhaus", "url": "https://urlhaus.abuse.ch/downloads/hostfile/", "kind": "hostfile"},
+    {"name": "phishing-database",
+     "url": "https://raw.githubusercontent.com/Phishing-Database/Phishing.Database/master/phishing-domains-ACTIVE.txt",
+     "kind": "domains", "relevant": True},
 ]
 MAX_PER_FEED = 30000
 
@@ -107,9 +112,19 @@ def host_of(url):
     return h.lower().rstrip(".") if h else None
 
 
-def fetch_feed(feed):
+def brand_keywords(brands):
+    kws = set()
+    for b in brands:
+        for k in [b["name"]] + b.get("keywords", []) + [d.split(".")[0] for d in b["domains"]]:
+            k = re.sub(r"[^a-z0-9]", "", k.lower())
+            if len(k) >= 4:
+                kws.add(k)
+    return kws
+
+
+def fetch_feed(feed, kws):
     try:
-        body = get(feed["url"], timeout=60)
+        body = get(feed["url"], timeout=120)
     except Exception:
         return None
     hosts = set()
@@ -120,10 +135,15 @@ def fetch_feed(feed):
         if feed["kind"] == "hostfile":
             parts = line.split()
             h = parts[-1].lower() if len(parts) >= 2 else None
+        elif feed["kind"] == "domains":
+            h = line.lower().rstrip(".")
         else:
             h = host_of(line)
-        if h and re.match(r"^[a-z0-9.-]+\.[a-z0-9-]{2,}$", h):
-            hosts.add(h)
+        if not h or not re.match(r"^[a-z0-9.-]+\.[a-z0-9-]{2,}$", h):
+            continue
+        if feed.get("relevant") and not (h.endswith(".it") or any(k in h for k in kws)):
+            continue
+        hosts.add(h)
         if len(hosts) >= MAX_PER_FEED:
             break
     return hosts
@@ -158,12 +178,18 @@ def main():
     counts = {}
     domains = set()
     ok_any = False
+    kws = brand_keywords(brands)
     for feed in FEEDS:
-        hosts = fetch_feed(feed)
+        cache = DATA / ("feed_%s.json" % feed["name"])
+        hosts = fetch_feed(feed, kws)
         if hosts is None:
-            continue
-        ok_any = True
-        counts[feed["name"]] = len(hosts)
+            # fonte non raggiungibile: si tengono i dati dell'ultima volta
+            hosts = set(load(cache, []))
+            counts[feed["name"]] = "non raggiungibile (dati precedenti: %d)" % len(hosts)
+        else:
+            ok_any = True
+            cache.write_text(json.dumps(sorted(hosts)), encoding="utf-8")
+            counts[feed["name"]] = len(hosts)
         domains |= hosts
 
     meta = load(DATA / "meta.json", {})

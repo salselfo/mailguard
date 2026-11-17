@@ -13,7 +13,7 @@ Incolli l'indirizzo di un mittente e ottieni un verdetto: dominio ufficiale, sos
 `updater/update.py` gira ogni giorno con GitHub Actions e:
 1. controlla SPF, DMARC, MX dei domini ufficiali e registra i cambiamenti in `docs/data/changelog.json`;
 2. controlla le pagine ufficiali di avviso phishing indicate in `alert_pages` (vuote di default, aggiungi gli indirizzi che vuoi monitorare);
-3. scarica gli elenchi pubblici di minacce (OpenPhish, URLhaus) in `docs/data/threats.json`.
+3. scarica gli elenchi pubblici di minacce (OpenPhish e Phishing.Database, quest'ultimo filtrato sui tuoi brand e sui domini .it; URLhaus è escluso perché richiede una chiave personale) in `docs/data/threats.json`.
 
 L'aggiornatore non aggiunge mai nuovi domini ufficiali da solo, per evitare che qualcuno possa avvelenare l'archivio. I nuovi mittenti autorizzati compaiono nel changelog e li approvi tu a mano in `docs/brands.json`.
 
