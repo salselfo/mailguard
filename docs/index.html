@@ -109,8 +109,8 @@ function render(level, findings) {
 }
 
 $('go').addEventListener('click', async () => {
+  await loading;
   const input = { sender: $('sender').value, extra: $('extra').value, links: $('links').value, headers: $('hdr').value, brands, threats };
-  if (!analyze) { await loading; }
   const res = analyze(input);
   render(res.level, res.findings);
   if (!res.sender.valid || !$('online').checked) return;
