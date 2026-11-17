@@ -1,0 +1,112 @@
+{
+ "domains": {
+  "agenziaentrate.gov.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com",
+    "spf.tmes.trendmicro.eu",
+    "spfedge.finanze.it",
+    "spfesg.sogei.it"
+   ]
+  },
+  "amazon.com": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "amazonses.com",
+    "spf1.amazon.com",
+    "spf2.amazon.com"
+   ]
+  },
+  "amazon.it": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "amazon.com"
+   ]
+  },
+  "inps.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com"
+   ]
+  },
+  "intesasanpaolo.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "service-now.com",
+    "spf.intesasanpaolo.com",
+    "spf.protection.outlook.com",
+    "successfactors.eu"
+   ]
+  },
+  "mediaworld.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "morespf.mediaworld.it",
+    "msh._spf.media-saturn.com",
+    "rnmk.com"
+   ]
+  },
+  "paypal.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "3ph1._spf.paypal.com",
+    "3ph2._spf.paypal.com",
+    "3ph3._spf.paypal.com",
+    "3ph4._spf.paypal.com",
+    "aspmx.pardot.com",
+    "pp._spf.paypal.com",
+    "sendgrid.net"
+   ]
+  },
+  "paypal.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "3rdparty._spf.paypal.com",
+    "3rdparty1._spf.paypal.com",
+    "3rdparty2._spf.paypal.com",
+    "pp._spf.paypal.com"
+   ]
+  },
+  "poste.it": {
+   "dmarc_policy": "none",
+   "has_mx": true,
+   "spf_includes": [
+    "spf1.poste.it",
+    "spf2.poste.it"
+   ]
+  },
+  "posteitaliane.it": {
+   "dmarc_policy": "none",
+   "has_mx": true,
+   "spf_includes": [
+    "em5735.posteitaliane.it",
+    "spf1.posteitaliane.it",
+    "spf2.posteitaliane.it"
+   ]
+  },
+  "postepay.it": {
+   "dmarc_policy": "none",
+   "has_mx": true,
+   "spf_includes": [
+    "spf1.postepay.it",
+    "spf2.postepay.it"
+   ]
+  },
+  "unicredit.it": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
+   ]
+  }
+ },
+ "pages": {}
+}
