@@ -1,0 +1,13 @@
+{
+  "note": "Archivio iniziale (seed). I domini vanno verificati dai siti ufficiali dei brand prima di fidarsene. L'aggiornatore NON aggiunge mai domini da solo: li propone nel changelog.",
+  "brands": [
+    { "id": "inps", "name": "INPS", "domains": ["inps.it"], "keywords": ["inps", "istituto nazionale previdenza sociale"], "alert_pages": [], "verified": false },
+    { "id": "agenzia-entrate", "name": "Agenzia delle Entrate", "domains": ["agenziaentrate.gov.it"], "keywords": ["agenzia delle entrate", "agenziaentrate"], "alert_pages": [], "verified": false },
+    { "id": "poste", "name": "Poste Italiane", "domains": ["poste.it", "postepay.it", "posteitaliane.it"], "keywords": ["poste", "postepay", "bancoposta"], "alert_pages": [], "verified": false },
+    { "id": "mediaworld", "name": "MediaWorld", "domains": ["mediaworld.it"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "amazon", "name": "Amazon", "domains": ["amazon.it", "amazon.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "paypal", "name": "PayPal", "domains": ["paypal.com", "paypal.it"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "intesa", "name": "Intesa Sanpaolo", "domains": ["intesasanpaolo.com"], "keywords": ["intesa", "intesasanpaolo"], "alert_pages": [], "verified": false },
+    { "id": "unicredit", "name": "UniCredit", "domains": ["unicredit.it"], "keywords": [], "alert_pages": [], "verified": false }
+  ]
+}
