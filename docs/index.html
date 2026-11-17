@@ -69,7 +69,7 @@
 <footer id="foot"></footer>
 
 <script type="module">
-import { analyze, dnsChecks, summarize, advice } from './core.js';
+let analyze, dnsChecks, summarize, advice;
 
 let brands = [], threats = new Set(), meta = null, changes = [];
 const $ = (id) => document.getElementById(id);
@@ -79,6 +79,8 @@ const COLOR = { ok: 'var(--ok)', unknown: 'var(--unknown)', warn: 'var(--warn)',
 async function j(url) { try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch { return null; } }
 
 async function load() {
+  const m0 = await j('data/meta.json');
+  ({ analyze, dnsChecks, summarize, advice } = await import('./core.js?v=' + encodeURIComponent((m0 && m0.updated) || '5')));
   const b = await j('brands.json'); brands = b ? b.brands : [];
   const t = await j('data/threats.json'); if (t) threats = new Set(t.domains || []);
   meta = await j('data/meta.json');
@@ -108,6 +110,7 @@ function render(level, findings) {
 
 $('go').addEventListener('click', async () => {
   const input = { sender: $('sender').value, extra: $('extra').value, links: $('links').value, headers: $('hdr').value, brands, threats };
+  if (!analyze) { await loading; }
   const res = analyze(input);
   render(res.level, res.findings);
   if (!res.sender.valid || !$('online').checked) return;
@@ -125,7 +128,7 @@ $('clear').addEventListener('click', () => {
   $('sender').focus();
 });
 
-load();
+const loading = load();
 </script>
 </body>
 </html>
