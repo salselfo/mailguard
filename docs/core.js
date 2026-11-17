@@ -53,6 +53,8 @@ export function isOfficial(domain, brand) {
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+// Nel testo si cercano nome e parole chiave di almeno 4 lettere: "Tim" da solo
+// potrebbe essere una persona, quindi i brand corti usano frasi piu' lunghe.
 function claimsBrand(text, brand) {
   const t = norm(text);
   if (!t.trim()) return false;
@@ -65,11 +67,16 @@ export function imitation(domain, brand) {
   const body = norm(domain).split('.').slice(0, -1);
   const tokens = body.flatMap((l) => l.split(/[-_]/)).filter(Boolean);
   const kws = [...new Set([brand.name, ...(brand.keywords || [])]
-    .map((k) => norm(k).replace(/[^a-z0-9]/g, '')).filter((k) => k.length >= 4))];
-  const mains = brand.domains.map((d) => norm(d.split('.')[0]));
+    .map((k) => norm(k).replace(/[^a-z0-9]/g, '')).filter((k) => k.length >= 3))];
+  const mains = brand.domains.map((d) => norm(d.split('.')[0])).filter((m) => m.length >= 5);
   let kind = null;
   for (const t of tokens) {
     for (const k of kws) {
+      if (k.length === 3) {
+        // nomi di tre lettere (es. TIM): sospetti solo se affiancati ad altre parole
+        if (t === k) { if (tokens.length > 1) return 'contains'; kind = 'lookalike'; }
+        continue;
+      }
       if (t === k || (k.length >= 8 && t.includes(k))) return 'contains';
       if (t.startsWith(k)) kind = 'lookalike';
     }
@@ -123,7 +130,95 @@ export function summarize(findings) {
   return level;
 }
 
-export function analyze({ sender, extra = '', headers = '', brands = [], threats = new Set() }) {
+// ---- Testo della mail: segnali tipici del phishing ----
+const SIGNALS = [
+  ['urgenza', /\b(entro\s+(?:le\s+)?\d+\s*(?:ore|giorni)|immediatamente|urgente|ultimo\s+(?:avviso|giorno|sollecito)|al piu presto)\b/],
+  ['minaccia di blocco', /\b(sospes[oa]|bloccat[oa]|disattivat[oa]|limitat[oa]|chius[oa]|scadut[oa]|cancellat[oa])\b/],
+  ['richiesta di dati', /\b(verific\w*|conferm\w*|aggiorn\w*|convalid\w*)\b[^.]{0,40}\b(dati|account|conto|carta|password|identita|accesso|credenziali)\b/],
+  ['soldi o premi', /\b(rimborso|vincit\w*|premio|bonus|multa|pagamento in sospeso)\b/],
+  ['invito a cliccare', /\b(clicc\w*|accedi|accedere|apri\s+il\s+link)\b[^.]{0,20}\b(qui|link|collegamento|sotto)\b/],
+  ['codici o dati sensibili', /\b(otp|codice\s+di\s+(?:sicurezza|verifica)|pin|iban|numero\s+di\s+carta|cvv)\b/],
+];
+const BAD_ATTACH = /\b[\w.-]+\.(?:exe|scr|zip|rar|7z|iso|img|html?|js|vbs|lnk|jar|docm|xlsm|pptm|msi|apk)\b/i;
+
+export function analyzeText(text) {
+  const out = [];
+  const t = (text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (!t.trim()) return out;
+  const hits = SIGNALS.filter(([, re]) => re.test(t)).map(([name]) => name);
+  if (hits.length >= 2) {
+    out.push({ level: 'warn', text: `Il testo usa tecniche tipiche del phishing: ${hits.join(', ')}.` });
+  }
+  const att = t.match(BAD_ATTACH);
+  if (att) out.push({ level: 'warn', text: `Si parla di un allegato rischioso (${att[0]}): non aprirlo.` });
+  return out;
+}
+
+// ---- Link ----
+const SHORTENERS = new Set(['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'ow.ly', 'is.gd', 'cutt.ly', 'rebrand.ly',
+  'shorturl.at', 'tiny.cc', 'buff.ly', 'rb.gy', 't.ly', 'lnkd.in', 'short.io']);
+
+export function extractUrls(text) {
+  const m = (text || '').match(/(?:https?:\/\/|www\.)[^\s<>"'`)\]]+/gi) || [];
+  return [...new Set(m.map((u) => u.replace(/[.,;:!?]+$/, '')))];
+}
+
+function parseUrl(u) {
+  try {
+    const url = new URL(/^https?:/i.test(u) ? u : 'http://' + u);
+    return { host: url.hostname.toLowerCase().replace(/\.$/, ''), userinfo: !!(url.username || url.password), https: url.protocol === 'https:' };
+  } catch (e) {
+    return null;
+  }
+}
+
+export function analyzeLinks({ text, brands = [], threats = new Set(), senderDomain = '', officialBrands = [] }) {
+  const urls = extractUrls(text);
+  const out = [];
+  if (!urls.length) return out;
+  const seen = new Set();
+  const add = (level, msg) => { const k = level + msg; if (!seen.has(k)) { seen.add(k); out.push({ level, text: msg }); } };
+  let problems = 0;
+  for (const u of urls.slice(0, 15)) {
+    const p = parseUrl(u);
+    if (!p) continue;
+    const h = p.host;
+    const before = out.length;
+    if (p.userinfo) add('danger', `Il link ${h} nasconde la vera destinazione dietro un "nome@": trucco classico del phishing.`);
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(h) || h.includes(':')) add('danger', `Un link punta a un indirizzo numerico (${h}) invece che a un sito.`);
+    if (SHORTENERS.has(h)) add('warn', `Link accorciato (${h}): non si vede dove porta. Non aprirlo.`);
+    if (!p.https) add('warn', `Il link verso ${h} non usa HTTPS.`);
+    if (h.includes('xn--')) add('warn', `Il link verso ${h} usa caratteri speciali (punycode).`);
+    const hit = inThreats(h, threats);
+    if (hit) add('danger', `Il link verso ${hit} compare negli elenchi pubblici di phishing/malware.`);
+    for (const b of brands) {
+      if (isOfficial(h, b)) continue;
+      const im = imitation(h, b);
+      if (im === 'contains') add('danger', `Il link verso ${h} contiene il nome di ${b.name} ma non è un suo dominio ufficiale.`);
+      else if (im === 'lookalike') add('warn', `Il link verso ${h} assomiglia a un dominio di ${b.name}.`);
+    }
+    for (const b of officialBrands) {
+      if (!isOfficial(h, b) && registrable(h) !== registrable(senderDomain)) {
+        add('warn', `Il link porta a ${h}, fuori dai domini ufficiali di ${b.name}. Le newsletter usano a volte siti di tracciamento, ma nel dubbio apri il sito scrivendo tu l'indirizzo.`);
+      }
+    }
+    if (out.length > before) problems++;
+  }
+  if (!problems) add('ok', `Link controllati (${Math.min(urls.length, 15)}): nessun segnale evidente. Non significa che siano sicuri.`);
+  if (urls.length > 15) add('unknown', `Ho controllato solo i primi 15 link su ${urls.length}.`);
+  return out;
+}
+
+export function advice(level) {
+  switch (level) {
+    case 'danger': return 'Non cliccare, non rispondere e non aprire allegati. Cancella la mail e, se vuoi, segnalala su commissariatodips.it (Polizia Postale).';
+    case 'warn': return 'Non fidarti finché non hai verificato: apri il sito dell\'ente scrivendo tu l\'indirizzo nel browser, senza usare i link della mail.';
+    case 'ok': return 'Se la mail chiede dati, password o pagamenti, entra comunque dal sito ufficiale scrivendo tu l\'indirizzo.';
+    default: return 'Non posso dirti se è sicura. Nel dubbio non cliccare i link e verifica dal sito ufficiale.';
+  }
+}
+
+export function analyze({ sender, extra = '', links = '', headers = '', brands = [], threats = new Set() }) {
   const findings = [];
   const add = (level, text) => findings.push({ level, text });
   const h = headers.trim() ? parseHeaders(headers) : null;
@@ -191,6 +286,9 @@ export function analyze({ sender, extra = '', headers = '', brands = [], threats
     add('ok', 'Il solo indirizzo non esclude lo spoofing: incolla le intestazioni complete per il controllo definitivo.');
   }
 
+  for (const f of analyzeText(`${s.display} ${extra}`)) findings.push(f);
+  for (const f of analyzeLinks({ text: `${links} ${extra}`, brands, threats, senderDomain: d, officialBrands: official })) findings.push(f);
+
   if (!findings.length) {
     add('unknown', 'Brand non riconosciuto: non posso né confermare né smentire. Verifica a mano.');
   }
@@ -224,7 +322,7 @@ export async function dnsChecks(domain, { official = false, fetchImpl = globalTh
       if (policy === 'reject' || policy === 'quarantine') {
         out.push({ level: 'ok', text: `Il dominio ufficiale ha DMARC "${policy}": i messaggi falsificati vengono bloccati dai provider che lo rispettano.` });
       } else {
-        out.push({ level: 'unknown', text: 'Il dominio ufficiale non blocca la falsificazione (DMARC assente o "none"): controlla bene le intestazioni.' });
+        out.push({ level: 'unknown', text: 'Il dominio ufficiale non blocca la falsificazione (DMARC assente o "none"): il solo indirizzo vale poco, servono le intestazioni.' });
       }
     }
   } catch (e) {

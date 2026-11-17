@@ -1,13 +1,32 @@
 {
-  "note": "Archivio iniziale (seed). I domini vanno verificati dai siti ufficiali dei brand prima di fidarsene. L'aggiornatore NON aggiunge mai domini da solo: li propone nel changelog.",
+  "note": "Archivio iniziale (seed). I domini vanno verificati dai siti ufficiali dei brand prima di fidarsene. L'aggiornatore NON aggiunge mai domini da solo: li propone nel changelog. Ogni sottodominio di un dominio ufficiale (es. comunicazioni.inps.it) conta come ufficiale.",
   "brands": [
     { "id": "inps", "name": "INPS", "domains": ["inps.it"], "keywords": ["inps", "istituto nazionale previdenza sociale"], "alert_pages": [], "verified": false },
     { "id": "agenzia-entrate", "name": "Agenzia delle Entrate", "domains": ["agenziaentrate.gov.it"], "keywords": ["agenzia delle entrate", "agenziaentrate"], "alert_pages": [], "verified": false },
+    { "id": "agenzia-riscossione", "name": "Agenzia delle Entrate Riscossione", "domains": ["agenziaentrateriscossione.gov.it"], "keywords": ["agenzia entrate riscossione", "equitalia"], "alert_pages": [], "verified": false },
     { "id": "poste", "name": "Poste Italiane", "domains": ["poste.it", "postepay.it", "posteitaliane.it"], "keywords": ["poste", "postepay", "bancoposta"], "alert_pages": [], "verified": false },
     { "id": "mediaworld", "name": "MediaWorld", "domains": ["mediaworld.it"], "keywords": [], "alert_pages": [], "verified": false },
     { "id": "amazon", "name": "Amazon", "domains": ["amazon.it", "amazon.com"], "keywords": [], "alert_pages": [], "verified": false },
     { "id": "paypal", "name": "PayPal", "domains": ["paypal.com", "paypal.it"], "keywords": [], "alert_pages": [], "verified": false },
     { "id": "intesa", "name": "Intesa Sanpaolo", "domains": ["intesasanpaolo.com"], "keywords": ["intesa", "intesasanpaolo"], "alert_pages": [], "verified": false },
-    { "id": "unicredit", "name": "UniCredit", "domains": ["unicredit.it"], "keywords": [], "alert_pages": [], "verified": false }
+    { "id": "unicredit", "name": "UniCredit", "domains": ["unicredit.it"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "fineco", "name": "Fineco", "domains": ["fineco.it", "finecobank.com"], "keywords": ["finecobank"], "alert_pages": [], "verified": false },
+    { "id": "bper", "name": "BPER Banca", "domains": ["bper.it"], "keywords": ["bper"], "alert_pages": [], "verified": false },
+    { "id": "banco-bpm", "name": "Banco BPM", "domains": ["bancobpm.it"], "keywords": ["bancobpm"], "alert_pages": [], "verified": false },
+    { "id": "satispay", "name": "Satispay", "domains": ["satispay.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "nexi", "name": "Nexi", "domains": ["nexi.it"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "tim", "name": "TIM", "domains": ["tim.it"], "keywords": ["telecom italia", "tim italia", "tim fibra"], "alert_pages": [], "verified": false },
+    { "id": "vodafone", "name": "Vodafone", "domains": ["vodafone.it", "vodafone.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "windtre", "name": "WindTre", "domains": ["windtre.it"], "keywords": ["wind tre"], "alert_pages": [], "verified": false },
+    { "id": "fastweb", "name": "Fastweb", "domains": ["fastweb.it"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "enel", "name": "Enel", "domains": ["enel.it"], "keywords": ["enel energia"], "alert_pages": [], "verified": false },
+    { "id": "dhl", "name": "DHL", "domains": ["dhl.com", "dhl.it"], "keywords": ["dhl express"], "alert_pages": [], "verified": false },
+    { "id": "ups", "name": "UPS", "domains": ["ups.com"], "keywords": ["united parcel service"], "alert_pages": [], "verified": false },
+    { "id": "fedex", "name": "FedEx", "domains": ["fedex.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "netflix", "name": "Netflix", "domains": ["netflix.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "apple", "name": "Apple", "domains": ["apple.com", "icloud.com"], "keywords": ["apple id", "icloud"], "alert_pages": [], "verified": false },
+    { "id": "microsoft", "name": "Microsoft", "domains": ["microsoft.com", "microsoftonline.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "google", "name": "Google", "domains": ["google.com"], "keywords": [], "alert_pages": [], "verified": false },
+    { "id": "facebook", "name": "Facebook", "domains": ["facebook.com", "facebookmail.com"], "keywords": [], "alert_pages": [], "verified": false }
   ]
 }

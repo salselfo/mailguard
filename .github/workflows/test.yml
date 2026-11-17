@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Esegui i test
+        run: node --test tests/core.test.mjs
+      - name: Controlla lo script dell'aggiornatore
+        run: python3 -m py_compile updater/update.py

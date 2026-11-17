@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1d4ed8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MailGuard">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
 <title>MailGuard, verifica mittente</title>
 <style>
   :root { color-scheme: light dark; --ok:#1a7f37; --unknown:#6b7280; --warn:#b45309; --danger:#c62828; }
@@ -10,16 +18,21 @@
   h1 { font-size: 1.4rem; margin: .2em 0; }
   .sub { color: var(--unknown); margin-top: 0; }
   label { display: block; margin: 14px 0 4px; font-weight: 600; font-size: .9rem; }
-  input, textarea { width: 100%; box-sizing: border-box; padding: 12px; font: inherit; border: 1px solid #8884; border-radius: 10px; background: transparent; color: inherit; }
-  textarea { min-height: 120px; font-family: ui-monospace, monospace; font-size: .8rem; }
+  input[type=text], textarea { width: 100%; box-sizing: border-box; padding: 12px; font: inherit; border: 1px solid #8884; border-radius: 10px; background: transparent; color: inherit; }
+  textarea { min-height: 90px; font-size: .85rem; }
+  #hdr { min-height: 120px; font-family: ui-monospace, monospace; font-size: .8rem; }
   details { margin-top: 12px; } summary { cursor: pointer; }
+  .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; margin-top: 16px; }
+  .check input { margin-top: 5px; }
   button { margin-top: 16px; width: 100%; padding: 14px; font: inherit; font-weight: 700; border: 0; border-radius: 10px; background: #1d4ed8; color: #fff; }
+  button.sec { background: transparent; color: inherit; border: 1px solid #8886; font-weight: 600; margin-top: 10px; }
   #out { margin-top: 20px; border-radius: 12px; border: 2px solid var(--c); padding: 14px; }
   #badge { font-weight: 800; font-size: 1.15rem; color: var(--c); }
   #out ul { padding-left: 1.1em; margin: 10px 0 0; }
   #out li { margin: 6px 0; }
   li.ok::marker { color: var(--ok); } li.unknown::marker { color: var(--unknown); }
   li.warn::marker { color: var(--warn); } li.danger::marker { color: var(--danger); }
+  #advice { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid #8884; font-weight: 600; }
   footer { margin-top: 28px; font-size: .8rem; color: var(--unknown); }
 </style>
 </head>
@@ -28,28 +41,35 @@
 <p class="sub">Incolla l'indirizzo da cui hai ricevuto la mail.</p>
 
 <label for="sender">Indirizzo del mittente</label>
-<input id="sender" type="text" inputmode="email" autocomplete="off" autocapitalize="off" placeholder="avvisi@esempio.it">
+<input id="sender" type="text" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="avvisi@esempio.it">
 
-<label for="extra">Nome mostrato o oggetto (facoltativo)</label>
-<input id="extra" type="text" autocomplete="off" placeholder="Es. INPS, rimborso in sospeso">
+<label for="extra">Nome mostrato, oggetto o testo (facoltativo)</label>
+<textarea id="extra" autocomplete="off" spellcheck="false" placeholder="Es. INPS, rimborso in sospeso. Puoi incollare anche il testo della mail."></textarea>
+
+<label for="links">Link contenuti nella mail (facoltativo)</label>
+<textarea id="links" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tieni premuto sul link nella mail, scegli Copia, poi incolla qui. Non aprirlo."></textarea>
 
 <details>
   <summary>Intestazioni complete (per scoprire lo spoofing)</summary>
-  <p class="sub">In Gmail: apri la mail, menu ⋮, "Mostra originale", copia tutto e incolla qui.</p>
-  <textarea id="hdr" placeholder="Authentication-Results: ..."></textarea>
+  <p class="sub">Su iPhone l'app Mail di solito non le mostra: usa la webmail del tuo provider da Safari ("Mostra originale" o "Visualizza sorgente").</p>
+  <textarea id="hdr" autocapitalize="off" spellcheck="false" placeholder="Authentication-Results: ..."></textarea>
 </details>
 
+<label class="check"><input id="online" type="checkbox" checked><span>Controlli online (SPF, DMARC, età del dominio). Vengono inviati a Cloudflare e al registro dei domini solo il nome del dominio, mai l'indirizzo completo o il testo.</span></label>
+
 <button id="go">Verifica</button>
+<button id="clear" class="sec" type="button">Pulisci</button>
 
 <section id="out" hidden>
   <div id="badge"></div>
   <ul id="list"></ul>
+  <p id="advice"></p>
 </section>
 
 <footer id="foot"></footer>
 
 <script type="module">
-import { analyze, dnsChecks, summarize } from './core.js';
+import { analyze, dnsChecks, summarize, advice } from './core.js';
 
 let brands = [], threats = new Set(), meta = null, changes = [];
 const $ = (id) => document.getElementById(id);
@@ -65,7 +85,7 @@ async function load() {
   changes = (await j('data/changelog.json')) || [];
   const f = $('foot');
   const upd = meta && meta.updated ? new Date(meta.updated).toLocaleString('it-IT') : 'mai';
-  f.textContent = `Ultimo aggiornamento automatico: ${upd}. Domini segnalati in archivio: ${threats.size}.`;
+  f.textContent = `Brand monitorati: ${brands.length}. Domini segnalati in archivio: ${threats.size}. Ultimo aggiornamento automatico: ${upd}. L'analisi avviene nel tuo browser: l'indirizzo, il testo e i link non vengono salvati né inviati a nessuno.`;
   if (changes.length) {
     const c = changes[0];
     f.append(document.createElement('br'), `Ultima novità: ${c.brand}, ${c.detail}`);
@@ -77,23 +97,31 @@ function render(level, findings) {
   out.style.setProperty('--c', COLOR[level]);
   $('badge').textContent = LABEL[level];
   const ul = $('list'); ul.replaceChildren();
-  for (const f of findings) {
+  const order = { danger: 0, warn: 1, unknown: 2, ok: 3 };
+  for (const f of [...findings].sort((a, b) => order[a.level] - order[b.level])) {
     const li = document.createElement('li');
     li.className = f.level; li.textContent = f.text; ul.append(li);
   }
+  $('advice').textContent = advice(level);
 }
 
 $('go').addEventListener('click', async () => {
-  const input = { sender: $('sender').value, extra: $('extra').value, headers: $('hdr').value, brands, threats };
+  const input = { sender: $('sender').value, extra: $('extra').value, links: $('links').value, headers: $('hdr').value, brands, threats };
   const res = analyze(input);
   render(res.level, res.findings);
-  if (!res.sender.valid) return;
+  if (!res.sender.valid || !$('online').checked) return;
   const official = res.findings.some((f) => f.level === 'ok' && f.text.includes('tra quelli ufficiali'));
   const more = await dnsChecks(res.sender.domain, { official });
   if (more.length) {
     const all = [...res.findings, ...more];
     render(summarize(all), all);
   }
+});
+
+$('clear').addEventListener('click', () => {
+  for (const id of ['sender', 'extra', 'links', 'hdr']) $(id).value = '';
+  $('out').hidden = true;
+  $('sender').focus();
 });
 
 load();
