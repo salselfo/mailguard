@@ -10,6 +10,37 @@
     "spfesg.sogei.it"
    ]
   },
+  "agenziaentrate.it": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com",
+    "spf.tmes.trendmicro.eu",
+    "spfedge.finanze.it",
+    "spfesg.sogei.it"
+   ]
+  },
+  "agenziaentrateriscossione.gov.it": {
+   "dmarc_policy": null,
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com",
+    "spf.tmes.trendmicro.eu",
+    "spfedge.equitaliaonline.it",
+    "spfesg.sogei.it"
+   ]
+  },
+  "agenziariscossione.gov.it": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.salesforce.com",
+    "spf.protection.outlook.com",
+    "spf.tmes.trendmicro.eu",
+    "spfedge.equitaliaonline.it",
+    "spfesg.sogei.it"
+   ]
+  },
   "amazon.com": {
    "dmarc_policy": "quarantine",
    "has_mx": true,
@@ -24,6 +55,123 @@
    "has_mx": true,
    "spf_includes": [
     "amazon.com"
+   ]
+  },
+  "apple.com": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf-txn.apple.com",
+    "_spf.apple.com"
+   ]
+  },
+  "bancobpm.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf1.bancobpm.it",
+    "_spf2.bancobpm.it",
+    "spf-00695502.pphosted.com"
+   ]
+  },
+  "bper.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.google.com",
+    "spf-007f6a02.pphosted.com",
+    "spf-007f6a04.pphosted.com",
+    "spf.protection.outlook.com"
+   ]
+  },
+  "dhl.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "3a._spf.dhl.com",
+    "3b._spf.dhl.com",
+    "3c._spf.dhl.com",
+    "3d._spf.dhl.com",
+    "3e._spf.dhl.com",
+    "3f._spf.dhl.com",
+    "dpdhl._spf.dhl.com",
+    "e2ma.net",
+    "mrsc._spf.dhl.com",
+    "spf.mandrillapp.com"
+   ]
+  },
+  "dhl.it": {
+   "dmarc_policy": "reject",
+   "has_mx": false,
+   "spf_includes": []
+  },
+  "enel.it": {
+   "dmarc_policy": "reject",
+   "has_mx": false,
+   "spf_includes": [
+    "spf1.enel.com",
+    "spf2.enel.com"
+   ]
+  },
+  "facebook.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.facebook.com"
+   ]
+  },
+  "facebookmail.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": []
+  },
+  "fastweb.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
+   ]
+  },
+  "fedex.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
+   ]
+  },
+  "fineco.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com"
+   ]
+  },
+  "fineco.mobi": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com"
+   ]
+  },
+  "finecobank.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf.protection.outlook.com"
+   ]
+  },
+  "google.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.google.com"
+   ]
+  },
+  "icloud.com": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.icloud.com"
    ]
   },
   "inps.it": {
@@ -50,6 +198,61 @@
     "morespf.mediaworld.it",
     "msh._spf.media-saturn.com",
     "rnmk.com"
+   ]
+  },
+  "microsoft.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf-a.microsoft.com",
+    "_spf-b.microsoft.com",
+    "_spf-ssg-a.msft.net",
+    "_spf1-meo.microsoft.com"
+   ]
+  },
+  "microsoftonline.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf-ssg-a.microsoft.com",
+    "spf-exacttarget.microsoftonline.com",
+    "spf-mfa.microsoftonline.com",
+    "spf-msods.microsoftonline.com",
+    "spfa.microsoftonline.com"
+   ]
+  },
+  "netflix.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "_spf.createsend.com",
+    "_spf.google.com",
+    "_spf.salesforce.com",
+    "_spf_ipv4.netflix.com",
+    "amazonses.com",
+    "servers.mcsv.net"
+   ]
+  },
+  "nexi.it": {
+   "dmarc_policy": "none",
+   "has_mx": true,
+   "spf_includes": [
+    "musvc.com",
+    "servers.mcsv.net",
+    "spf.mailjet.com",
+    "spf.protection.outlook.com"
+   ]
+  },
+  "nexigroup.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "143789380.spf01.hubspotemail.net",
+    "145831871.spf02.hubspotemail.net",
+    "amazonses.com",
+    "mail.zendesk.com",
+    "spf.protection.outlook.com",
+    "spf_c.oraclecloud.com"
    ]
   },
   "paypal.com": {
@@ -100,13 +303,89 @@
     "spf2.postepay.it"
    ]
   },
+  "satispay.com": {
+   "dmarc_policy": "none",
+   "has_mx": true,
+   "spf_includes": [
+    "148177355.spf05.hubspotemail.net",
+    "_spf.google.com",
+    "amazonses.com",
+    "flattening.satispay.email",
+    "mail.zendesk.com",
+    "servers.mcsv.net",
+    "spf.mandrillapp.com"
+   ]
+  },
+  "tim.it": {
+   "dmarc_policy": null,
+   "has_mx": true,
+   "spf_includes": [
+    "auth.msgapp.com",
+    "eu.khoros-mail.com"
+   ]
+  },
   "unicredit.it": {
    "dmarc_policy": "quarantine",
    "has_mx": true,
    "spf_includes": [
     "%{ir}.%{v}.%{d}.spf.has.pphosted.com"
    ]
+  },
+  "ups.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "%{ir}.%{v}.%{d}.spf.has.pphosted.com",
+    "spf-002b8001.pphosted.com",
+    "spf-002b8002.pphosted.com",
+    "spf-002b8003.pphosted.com",
+    "spf-002b8004.pphosted.com"
+   ]
+  },
+  "vodafone.com": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "spf1.vodafone.com",
+    "spf2.vodafone.com"
+   ]
+  },
+  "vodafone.it": {
+   "dmarc_policy": "reject",
+   "has_mx": true,
+   "spf_includes": [
+    "digitalfax.vodafone.it",
+    "fastweb._spf.vodafone.it",
+    "net.vodafone.it",
+    "spf.byway.it",
+    "spf2.vodafone.com",
+    "t.contactlab.it"
+   ]
+  },
+  "windtre.it": {
+   "dmarc_policy": "quarantine",
+   "has_mx": true,
+   "spf_includes": [
+    "amazonses.com",
+    "authsmtp.com",
+    "spf.mailjet.com",
+    "spf.mandrillapp.com",
+    "spf.protection.outlook.com",
+    "spf1.windtre.it"
+   ]
   }
  },
- "pages": {}
+ "pages": {
+  "https://enel.it/en/supporto/truffe": "257116ee3e3a1d18f0698e75165b7f4f0d9ccd22ed9dd58411cff763d63df59c",
+  "https://it.finecobank.com/sicurezza/": "b56488531a5621a94dab2809e536882e3efbf6d84c84c2f1d256ac084082b177",
+  "https://www.agenziaentrate.gov.it/portale/area-tematica-phishing": "c97afb6c14dcebe6dd0ec71c7e7772d0da3e40f2998f4259f83d0e0f6058533d",
+  "https://www.agenziaentrate.gov.it/portale/focus-sul-phishing/segnalazioni-e-approfondimenti": "344378b43322efc4a3b7e15c09fc26845c6263b4372d02f24e1272a74220e62a",
+  "https://www.bancobpm.it/magazine/guide/sicurezza-bancaria-la-guida-completa/": "2671f028345b6e32caa04f0b03687b57e81f77390c15d708bcd2c127a578fd10",
+  "https://www.bper.it/privati/servizi-digitali/sicurezza-online": "7f9b9918b5e2ba6e3dc8830e9987d5d19b8ebfd2cf67a8243c95de81cc0b31df",
+  "https://www.inps.it/it/it/inps-comunica/dossier/vademecum-antitruffe/truffe-online--il-phishing.html": "90a3ad9704b1185107027ed5357ea71b8af360364e83b3087e9c259e7b4b3e30",
+  "https://www.inps.it/it/it/inps-comunica/dossier/vademecum-antitruffe/vademecum.html": "f9be27fa2b0ae07fc50c28c35cf983633f1c93f6c550c6944ecbd5c016f48c06",
+  "https://www.intesasanpaolo.com/it/common/landing/anti-phishing/truffa-via-email.html": "b03e55c9f558587a3c551a61b9964338bff1759b8168707add7c7cf2b81dc68b",
+  "https://www.poste.it/sicurezza-online/guide-per-operare-in-sicurezza/come-difendersi-dalle-truffe": "2314d22c20594441516044c2c414b0503f7c0aa5dc1c2362e0008a2cdfc0dc8d",
+  "https://www.tim.it/assistenza/assistenza-tecnica/mail/sicurezza/phishing": "0150a06ce765604c75e13e82d8dce545f6356bcf28023ea57bcf22dea11025cb"
+ }
 }
