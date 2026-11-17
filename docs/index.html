@@ -85,7 +85,8 @@ async function load() {
   changes = (await j('data/changelog.json')) || [];
   const f = $('foot');
   const upd = meta && meta.updated ? new Date(meta.updated).toLocaleString('it-IT') : 'mai';
-  f.textContent = `Brand monitorati: ${brands.length}. Domini segnalati in archivio: ${threats.size}. Ultimo aggiornamento automatico: ${upd}. L'analisi avviene nel tuo browser: l'indirizzo, il testo e i link non vengono salvati né inviati a nessuno.`;
+  const ver = brands.filter((b) => b.verified).length;
+  f.textContent = `Brand monitorati: ${brands.length} (${ver} con dominio verificato dalle fonti ufficiali). Domini segnalati in archivio: ${threats.size}. Ultimo aggiornamento automatico: ${upd}. L'analisi avviene nel tuo browser: l'indirizzo, il testo e i link non vengono salvati né inviati a nessuno.`;
   if (changes.length) {
     const c = changes[0];
     f.append(document.createElement('br'), `Ultima novità: ${c.brand}, ${c.detail}`);

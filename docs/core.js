@@ -204,6 +204,10 @@ export function analyzeLinks({ text, brands = [], threats = new Set(), senderDom
     }
     if (out.length > before) problems++;
   }
+  // Alcuni enti dichiarano pubblicamente di non inviare mai link nelle email.
+  if (urls.length) for (const b of officialBrands) {
+    if (b.no_link_policy) add('ok', 'Nota: ' + b.no_link_policy);
+  }
   if (!problems) add('ok', `Link controllati (${Math.min(urls.length, 15)}): nessun segnale evidente. Non significa che siano sicuri.`);
   if (urls.length > 15) add('unknown', `Ho controllato solo i primi 15 link su ${urls.length}.`);
   return out;
