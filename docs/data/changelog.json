@@ -1,5 +1,26 @@
 [
  {
+  "date": "2026-11-23",
+  "brand": "Agenzia delle Entrate",
+  "domain": "https://www.agenziaentrate.gov.it/portale/area-tematica-phishing",
+  "type": "page",
+  "detail": "pagina di avviso aggiornata: https://www.agenziaentrate.gov.it/portale/area-tematica-phishing"
+ },
+ {
+  "date": "2026-11-23",
+  "brand": "Agenzia delle Entrate",
+  "domain": "https://www.agenziaentrate.gov.it/portale/focus-sul-phishing/segnalazioni-e-approfondimenti",
+  "type": "page",
+  "detail": "pagina di avviso aggiornata: https://www.agenziaentrate.gov.it/portale/focus-sul-phishing/segnalazioni-e-approfondimenti"
+ },
+ {
+  "date": "2026-11-23",
+  "brand": "TIM",
+  "domain": "https://www.tim.it/assistenza/assistenza-tecnica/mail/sicurezza/phishing",
+  "type": "page",
+  "detail": "pagina di avviso aggiornata: https://www.tim.it/assistenza/assistenza-tecnica/mail/sicurezza/phishing"
+ },
+ {
   "date": "2026-11-19",
   "brand": "Agenzia delle Entrate",
   "domain": "https://www.agenziaentrate.gov.it/portale/area-tematica-phishing",
